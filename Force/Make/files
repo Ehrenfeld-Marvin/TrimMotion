@@ -1,0 +1,4 @@
+forces/forces.C
+TrimForces/TrimForces.C
+
+LIB = $(FOAM_USER_LIBBIN)/libTrimForces
