@@ -77,6 +77,12 @@ float Time_Intervall_Value = (NuOfOsc*2*3.141592653)/omega_PID;
 				break;
 			}
     		}
+    		
+    		amplitude_ramp=amplitude_y;
+		phi_ramp=phi_y;
+		
+		amplitude_0=amplitude_y;
+		phi_0=phi_y;
     	
 	/*++++++++++++++++++++++++++++++++++++++++++++*/
 	}
@@ -89,6 +95,9 @@ float Time_Intervall_Value = (NuOfOsc*2*3.141592653)/omega_PID;
 		
 		amplitude_ramp=amplitude_.z();
 		phi_ramp=0;
+		
+		amplitude_0=amplitude_.z();
+		phi_0=0;
 		
 		IST_alt_AMP=0;
 		e_t_alt_AMP=0;

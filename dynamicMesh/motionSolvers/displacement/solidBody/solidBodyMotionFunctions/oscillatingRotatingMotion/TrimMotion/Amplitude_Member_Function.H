@@ -18,6 +18,7 @@
 	Force_Average_Z = 0;
 	Force_Average_Y = 0;
 	
+	
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 	
 
@@ -31,6 +32,8 @@
       		Force_Average_X /= (Average_Divider);			//Mittelwerte von n-Cycles bestimmen
 		Force_Average_Y /= (Average_Divider);
      		Force_Average_Z /= (Average_Divider);
+     		
+     		PatchName.find("1");
      		
 /*#################	AMPLITUDE - PID	##############################*/     		
 
@@ -53,37 +56,39 @@
 			&e_t_AMP
      		);							//PID-REGLER
      		if(amplitude_y<=-50) amplitude_y = -50;		//MAXIMALER ANSTELLWINKEL
-     		if(amplitude_y>=50) amplitude_y = 50;
      		
-     		writePIDdata
-		(
-			"/Amplitude-PID-Data",
-			amplitude_target,			
-     			Amplitude_K_P, 
-     			Amplitude_K_I, 
-     			Amplitude_K_D,
-			IST_AMP,
-			e_t_SUMME_AMP,
-			e_t_AMP,
-			amplitude_y,
-			P_AMP,
-			I_AMP,
-			D_AMP,
-			Force_Average_X,
-			Force_Average_Y,
-			Force_Average_Z,
-			time
-		);
+     		if(PatchName=="_Blade1")
+     		{
+     			writePIDdata
+			(
+				"/Amplitude-PID-Data",
+				amplitude_target,			
+     				Amplitude_K_P, 
+     				Amplitude_K_I, 
+     				Amplitude_K_D,
+				IST_AMP,
+				e_t_SUMME_AMP,
+				e_t_AMP,
+				amplitude_y,
+				P_AMP,
+				I_AMP,
+				D_AMP,
+				Force_Average_X,
+				Force_Average_Y,
+				Force_Average_Z,
+				time
+			);
+			
+			Back_up_Data_PID
+			(
+				"/Amplitude-BackUp-Data",
+				time,
+				IST_alt_AMP,
+				e_t_SUMME_AMP,
+				amplitude_y
+			);
+		}
 		
-		Back_up_Data_PID
-		(
-			"/Amplitude-BackUp-Data",
-			time,
-			IST_alt_AMP,
-			e_t_SUMME_AMP,
-			amplitude_y
-		);
-
 /*#############################################################################*/    
 
 /*++++++++++++++++++++++++++	PHASE - PID	+++++++++++++++++++++++++++++++++*/  	
@@ -106,44 +111,46 @@
 			&e_t_PHI
 		);
 		
-		writePIDdata
-		(
-			"/Phi-PID-Data",
-			phi_target,			
-     			Phi_K_P, 
-     			Phi_K_I, 
-     			Phi_K_D,
-			IST_PHI,
-			e_t_SUMME_PHI,
-			e_t_PHI,
-			phi_y,
-			P_PHI,
-			I_PHI,
-			D_PHI,
-			Force_Average_X,
-			Force_Average_Y,
-			Force_Average_Z,
-			time
-		);
-		
-		Back_up_Data_PID
-		(
-			"/Phi-BackUp-Data",
-			time,
-			IST_alt_PHI,
-			e_t_SUMME_PHI,
-			phi_y
-		);
-
+		if(PatchName=="_Blade1")
+		{
+		 
+			writePIDdata
+			(
+				"/Phi-PID-Data",
+				phi_target,			
+     				Phi_K_P, 
+     				Phi_K_I, 
+     				Phi_K_D,
+				IST_PHI,
+				e_t_SUMME_PHI,
+				e_t_PHI,
+				phi_y,
+				P_PHI,
+				I_PHI,
+				D_PHI,
+				Force_Average_X,
+				Force_Average_Y,
+				Force_Average_Z,
+				time
+			);
+			
+			Back_up_Data_PID
+			(
+				"/Phi-BackUp-Data",
+				time,
+				IST_alt_PHI,
+				e_t_SUMME_PHI,
+				phi_y
+			);
+		}
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/		
 
-//		amplitude_.z() = amplitude_y;
 		Ramp_change=true;					//Rampe aktivieren
 		Ramp_Time_Counter=Ramp_Time;				//Zeit für Rampe zurücksetzen
 		
 		Read_Time_Intervall += Time_Intervall_Value; 		//Intervall auf nächsten Cycle erhöhen
+		
 
-				
 //		return amplitude_;
 	}
 	
@@ -151,35 +158,19 @@
 	
 	if(Ramp_change && Ramp_Time_Counter>0)			//Amplitude wird linear geändert (Rampenfunktion)
 	{
-		cout 	<<"\n\n#####	RAMP DATA	#####\n\n"
-		 	<<"\n\n\namplitude_ramp: " << amplitude_ramp << "\n"
-			<<"phi_ramp: " << phi_ramp << "\n"
-			<<"amplitude_0: " << amplitude_0 << "\n"
-			<<"phi_0: " << phi_0 << "\n";
 			
 	
 		delta_amplitude 	= amplitude_y 	- amplitude_ramp;
 		delta_phi 		= phi_y 	- phi_ramp;
 		
-		cout 	<<"\ndelta_amplitude: " << delta_amplitude << "\n"
-			<<"delta_phi: " << delta_phi << "\n"
-			<<"delta_t: " << delta_t << "\n"
-			<<"Ramp_Time_Counter: " << Ramp_Time_Counter << "\n";
-					
 		amplitude_ramp 	= amplitude_0 	+ (delta_t * delta_amplitude) 	/ Ramp_Time_Counter;
 		phi_ramp 		= phi_0 	+ (delta_t * delta_phi) 		/ Ramp_Time_Counter;
-		
-		cout 	<<"\namplitude_ramp: " << amplitude_ramp << "\n"
-			<<"phi_ramp: " << phi_ramp << "\n";
 		
 		Ramp_Time_Counter -= delta_t;
 		
 		amplitude_0 	= amplitude_ramp;
 		phi_0 		= phi_ramp;
 
-		cout 	<<"\namplitude_0: " << amplitude_0 << "\n"
-			<<"phi_0: " << phi_0 << "\n"
-			<<"Ramp_Time_Counter: " << Ramp_Time_Counter << "\n";
 
 		if(Ramp_Time_Counter<0) 
 		{
@@ -194,7 +185,10 @@
 	
 	*Amplitude_Value 	= amplitude_ramp;
 	*phi_Value 		= phi_ramp;
-	
+
+
+
+		
 /*	
 	cout 	<<"\n\n\nAMPLITUDE:\n\n"
 		<<"amplitude_target: " << amplitude_target << "\n"

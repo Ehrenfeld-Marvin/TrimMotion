@@ -97,12 +97,10 @@ transformation() const
 	Amplitude(&Amplitude_Value, &phi_Value);
 	amplitude_.z()=Amplitude_Value;
 	
-	cout <<"\n\n++++++++	SINUS VALUES	+++++++++\n"
-		<<"Amplitude: " << amplitude_.z() <<"\n"
-		<<"Phase: " << phi_Value <<"\n";
 	
-	vector eulerAngles = amplitude_ * sign(omega) * ( sin(fabs(omega*t) + initialOffset_*pi + phi_Value ) - sin( initialOffset_*pi ) );
-
+//	vector eulerAngles = amplitude_ * sign(omega) * ( sin(fabs(omega*t) + initialOffset_*pi /*+ phi_Value*/ ) - sin( initialOffset_*pi ) );
+	vector eulerAngles = amplitude_ * sin(omega*t + initialOffset_*pi + phi_Value);
+	
     // Convert the rotational motion from deg to rad
     eulerAngles *= degToRad();
 
