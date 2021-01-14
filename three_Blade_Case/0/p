@@ -1,0 +1,98 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2006                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      binary;
+    class       volScalarField;
+    arch        "LSB;label=32;scalar=64";
+    location    "0";
+    object      p;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 2 -2 0 0 0 0];
+
+
+internalField   uniform 0;
+
+boundaryField
+{
+    AMI_W1_IN
+    {
+        type            cyclicAMI;
+        value           uniform 0;
+    }
+    AMI_W1_OUT
+    {
+        type            cyclicAMI;
+        value           uniform 0;
+    }
+    AMI_W2_IN
+    {
+        type            cyclicAMI;
+        value           uniform 0;
+    }
+    AMI_W2_OUT
+    {
+        type            cyclicAMI;
+        value           uniform 0;
+    }
+    AMI_W3_IN
+    {
+        type            cyclicAMI;
+        value           uniform 0;
+    }
+    AMI_W3_OUT
+    {
+        type            cyclicAMI;
+        value           uniform 0;
+    }
+    Border
+    {
+        type            zeroGradient;
+    }
+    Inlet
+    {
+        type            zeroGradient;
+    }
+    Outlet
+    {
+        type            fixedValue;
+        value           uniform 0;
+    }
+    Rotor_IN
+    {
+        type            cyclicAMI;
+        value           uniform 0;
+    }
+    Rotor_OUT
+    {
+        type            cyclicAMI;
+        value           uniform 0;
+    }
+    Wing1
+    {
+        type            zeroGradient;
+    }
+    Wing2
+    {
+        type            zeroGradient;
+    }
+    Wing3
+    {
+        type            zeroGradient;
+    }
+    BaseAndTop
+    {
+        type            empty;
+    }
+}
+
+
+// ************************************************************************* //

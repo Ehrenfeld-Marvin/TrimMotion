@@ -1,0 +1,166 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2006                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      binary;
+    class       polyBoundaryMesh;
+    arch        "LSB;label=32;scalar=64";
+    location    "constant/polyMesh";
+    object      boundary;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+15
+(
+    AMI_W1_IN
+    {
+        type            cyclicAMI;
+        inGroups        1(cyclicAMI);
+        nFaces          69;
+        startFace       26147;
+        matchTolerance  0.0001;
+        transform       noOrdering;
+        neighbourPatch  AMI_W1_OUT;
+        AMIMethod       faceAreaWeightAMI;
+        restartUncoveredSourceFace 1;
+    }
+    AMI_W1_OUT
+    {
+        type            cyclicAMI;
+        inGroups        1(cyclicAMI);
+        nFaces          69;
+        startFace       26216;
+        matchTolerance  0.0001;
+        transform       noOrdering;
+        neighbourPatch  AMI_W1_IN;
+        AMIMethod       faceAreaWeightAMI;
+        restartUncoveredSourceFace 1;
+    }
+    AMI_W2_IN
+    {
+        type            cyclicAMI;
+        inGroups        1(cyclicAMI);
+        nFaces          69;
+        startFace       26285;
+        matchTolerance  0.0001;
+        transform       noOrdering;
+        neighbourPatch  AMI_W2_OUT;
+        AMIMethod       faceAreaWeightAMI;
+        restartUncoveredSourceFace 1;
+    }
+    AMI_W2_OUT
+    {
+        type            cyclicAMI;
+        inGroups        1(cyclicAMI);
+        nFaces          69;
+        startFace       26354;
+        matchTolerance  0.0001;
+        transform       noOrdering;
+        neighbourPatch  AMI_W2_IN;
+        AMIMethod       faceAreaWeightAMI;
+        restartUncoveredSourceFace 1;
+    }
+    AMI_W3_IN
+    {
+        type            cyclicAMI;
+        inGroups        1(cyclicAMI);
+        nFaces          69;
+        startFace       26423;
+        matchTolerance  0.0001;
+        transform       noOrdering;
+        neighbourPatch  AMI_W3_OUT;
+        AMIMethod       faceAreaWeightAMI;
+        restartUncoveredSourceFace 1;
+    }
+    AMI_W3_OUT
+    {
+        type            cyclicAMI;
+        inGroups        1(cyclicAMI);
+        nFaces          69;
+        startFace       26492;
+        matchTolerance  0.0001;
+        transform       noOrdering;
+        neighbourPatch  AMI_W3_IN;
+        AMIMethod       faceAreaWeightAMI;
+        restartUncoveredSourceFace 1;
+    }
+    Border
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          38;
+        startFace       26561;
+    }
+    Inlet
+    {
+        type            patch;
+        nFaces          19;
+        startFace       26599;
+    }
+    Outlet
+    {
+        type            patch;
+        nFaces          19;
+        startFace       26618;
+    }
+    Rotor_IN
+    {
+        type            cyclicAMI;
+        inGroups        1(cyclicAMI);
+        nFaces          99;
+        startFace       26637;
+        matchTolerance  0.0001;
+        transform       noOrdering;
+        neighbourPatch  Rotor_OUT;
+        AMIMethod       faceAreaWeightAMI;
+        restartUncoveredSourceFace 1;
+    }
+    Rotor_OUT
+    {
+        type            cyclicAMI;
+        inGroups        1(cyclicAMI);
+        nFaces          99;
+        startFace       26736;
+        matchTolerance  0.0001;
+        transform       noOrdering;
+        neighbourPatch  Rotor_IN;
+        AMIMethod       faceAreaWeightAMI;
+        restartUncoveredSourceFace 1;
+    }
+    Wing1
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          48;
+        startFace       26835;
+    }
+    Wing2
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          48;
+        startFace       26883;
+    }
+    Wing3
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          48;
+        startFace       26931;
+    }
+    BaseAndTop
+    {
+        type            empty;
+        inGroups        1(empty);
+        nFaces          35188;
+        startFace       26979;
+    }
+)
+
+// ************************************************************************* //

@@ -1,0 +1,116 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1912                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    cellDisplacement
+    {
+        solver          PCG;
+        preconditioner  DIC;
+
+        tolerance       1e-04;
+        relTol          0;
+        maxIter         100;
+    }
+    p
+    {
+        solver          PBiCGStab;
+        preconditioner  FDIC;
+        tolerance       1e-4;
+        relTol          0.1;
+	minIter 1;
+	maxIter		20;
+    }
+    
+    yPsi
+	{
+    	solver          PBiCGStab;
+        preconditioner  FDIC;
+        tolerance       1e-5;
+        relTol          0;
+	}
+
+    pFinal
+    {
+        relTol 0.01;
+        $p;
+
+    }
+
+    pcorr
+    {
+        $p;
+        solver          PCG;
+        preconditioner  DIC;
+    }
+
+    pcorrFinal
+    {
+        $pcorr;
+        relTol          0;
+    }
+
+    "(U|k|omega)"
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-6;
+        relTol          0;
+        minIter     1;
+    }
+
+    "(U|k|omega)Final"
+    {
+        $U;
+        tolerance       1e-6;
+        relTol          0;
+    }
+}
+
+PIMPLE
+{
+
+    correctPhi          false;		//D off in overset - Requires fluxRequired in fvSchemes for pcorr
+    oversetAdjustPhi    false;		//D off - Only in overset
+    nOuterCorrectors    4;
+    nCorrectors         3;
+    nNonOrthogonalCorrectors 2;
+    checkMeshCourantNo	 yes;
+    turbOnFinalIterOnly no;
+    consistent		 true;
+
+
+
+}
+
+relaxationFactors
+{
+    fields
+    {
+        p               0.95;
+        pFinal          1.0;
+    }
+    equations
+    {
+        "(U)"   0.95;
+        "(U)Final" 1;
+        "(k|omega|gammaInt|ReThetat)"   1;
+        yWall       0.7;
+        "(k|omega|yWall|gammaInt|ReThetat)Final"   1.0;
+    }
+}
+
+// ************************************************************************* //

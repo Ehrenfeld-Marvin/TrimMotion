@@ -1,0 +1,101 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2006                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      binary;
+    class       volVectorField;
+    arch        "LSB;label=32;scalar=64";
+    location    "0";
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 1 -1 0 0 0 0];
+
+
+internalField   uniform (0 0 0);
+
+boundaryField
+{
+    AMI_W1_IN
+    {
+        type            cyclicAMI;
+        value           uniform (0 0 0);
+    }
+    AMI_W1_OUT
+    {
+        type            cyclicAMI;
+        value           uniform (0 0 0);
+    }
+    AMI_W2_IN
+    {
+        type            cyclicAMI;
+        value           uniform (0 0 0);
+    }
+    AMI_W2_OUT
+    {
+        type            cyclicAMI;
+        value           uniform (0 0 0);
+    }
+    AMI_W3_IN
+    {
+        type            cyclicAMI;
+        value           uniform (0 0 0);
+    }
+    AMI_W3_OUT
+    {
+        type            cyclicAMI;
+        value           uniform (0 0 0);
+    }
+    Border
+    {
+        type            slip;
+    }
+    Inlet
+    {
+        type            fixedValue;
+        value           uniform (0 0 0);
+    }
+    Outlet
+    {
+        type            zeroGradient;
+    }
+    Rotor_IN
+    {
+        type            cyclicAMI;
+        value           uniform (0 0 0);
+    }
+    Rotor_OUT
+    {
+        type            cyclicAMI;
+        value           uniform (0 0 0);
+    }
+    Wing1
+    {
+        type            movingWallVelocity;
+        value           uniform (0 0 0);
+    }
+    Wing2
+    {
+        type            movingWallVelocity;
+        value           uniform (0 0 0);
+    }
+    Wing3
+    {
+        type            movingWallVelocity;
+        value           uniform (0 0 0);
+    }
+    BaseAndTop
+    {
+        type            empty;
+    }
+}
+
+
+// ************************************************************************* //

@@ -1,0 +1,10 @@
+Target			0.2;
+Angle			30;
+Amplitude_K_P		-15;
+Amplitude_K_I		-60;
+Amplitude_K_D		-1.5;
+Phi_K_P		0.3;
+Phi_K_I		1;
+Phi_K_D		0.05;
+amplitude_begin	0;
+Oscillations		1;
