@@ -83,14 +83,15 @@ float Time_Intervall_Value = (NuOfOsc*2*3.141592653)/omega_PID;
 		
 		amplitude_0=amplitude_y;
 		phi_0=phi_y;
-    	
+		
 	/*++++++++++++++++++++++++++++++++++++++++++++*/
 	}
 	
 	if(startTime==0)							//RESTART- UND START-BEDINUNGEN FÜR START = 0
 	{
+		Euler_Ramp=0;
 //		amplitude_.z()=amplitude_begin;
-		amplitude_.z()=0;
+		amplitude_.z()=10;
 		phi_Value=0;
 		
 		amplitude_ramp=amplitude_.z();
@@ -112,8 +113,8 @@ float Time_Intervall_Value = (NuOfOsc*2*3.141592653)/omega_PID;
 		Force_Average_Z=0;
 		
 		Read_Time_Intervall=Time_Intervall_Value;
-		remove("Phi-BackUp-Data.dat");
-		remove("Amplitude-BackUp-Data.dat");
+		remove("Phi-BackUp-Data");
+		remove("Amplitude-BackUp-Data");
 	}
 	amplitude_.x()=0;
 	amplitude_.y()=0;

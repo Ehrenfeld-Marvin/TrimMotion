@@ -81,9 +81,8 @@ class TrimMotion
         void operator=(const TrimMotion&) = delete;
 
 
-
+	mutable scalar Euler_Ramp;
 	int NuOfOsc=1;
-        
 	mutable scalar Read_Time_Intervall;		//Intervall when the amplitude is supposed to change
 	
 	mutable float amplitude_target;			//Zielwert der Force

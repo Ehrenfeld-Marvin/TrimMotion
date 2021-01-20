@@ -153,13 +153,10 @@
 
 //		return amplitude_;
 	}
-	
 
 	
 	if(Ramp_change && Ramp_Time_Counter>0)			//Amplitude wird linear geändert (Rampenfunktion)
 	{
-			
-	
 		delta_amplitude 	= amplitude_y 	- amplitude_ramp;
 		delta_phi 		= phi_y 	- phi_ramp;
 		
@@ -178,10 +175,9 @@
 			amplitude_ramp 	= amplitude_y;
 			phi_ramp 		= phi_y;
 		}
-		
-
-			
 	}
+	
+	
 	
 	*Amplitude_Value 	= amplitude_ramp;
 	*phi_Value 		= phi_ramp;

@@ -77,7 +77,7 @@ Foam::solidBodyMotionFunctions::TrimMotion::
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 #include "WriteFilePID.H"
-#include "Amplitude_Member_Function.H"
+#include "PID_Controller.H"
 #include "PID_BackUp_Data.H"
 #include "PID_REGLER.H"
 
@@ -87,9 +87,14 @@ Foam::solidBodyMotionFunctions::TrimMotion::
 transformation() const
 {
     scalar t = time_.value();
+    
     scalar omega = omega_->value(t);
     
-    // Rotation around axis
+    scalar First_Cycle = (NuOfOsc*2*3.141592653)/(omega_PID*2);
+           
+    scalar delta_time = time_.deltaT().value();
+    
+//    Rotation around axis
 //    scalar angle = omega_->integrate(0, t);
 	
 //    vector eulerAngles = amplitude_ * sign(omega) * ( sin(fabs(omega*t) + initialOffset_*pi ) - sin( initialOffset_*pi ) ); /// the second sin is to ensure that the value is null at time = 0 /// WARNING: the t inside the sine that the function1 will not really be respected, as the angle will be calculated at each time step as if it had for the whole time the ang. vel. of the current timestep
@@ -99,7 +104,18 @@ transformation() const
 	
 	
 //	vector eulerAngles = amplitude_ * sign(omega) * ( sin(fabs(omega*t) + initialOffset_*pi /*+ phi_Value*/ ) - sin( initialOffset_*pi ) );
-	vector eulerAngles = amplitude_ * sin(omega*t + initialOffset_*pi + phi_Value);
+	vector eulerAngles = amplitude_ * sin(omega*t + initialOffset_*pi*Euler_Ramp + phi_Value);
+	
+	if(t<=First_Cycle)			//Amplitude wird linear geändert (Rampenfunktion)
+	{
+		Euler_Ramp = Euler_Ramp + 1/(First_Cycle/delta_time);
+	}
+	else Euler_Ramp=1;
+	
+	cout 	<< "\nEuler_Ramp: " << Euler_Ramp
+		<< "\ntime: " << t
+		<< "\nFirst Cycle: " << First_Cycle
+		<< "\n";
 	
     // Convert the rotational motion from deg to rad
     eulerAngles *= degToRad();
@@ -135,6 +151,7 @@ bool Foam::solidBodyMotionFunctions::TrimMotion::read
 	SBMFCoeffs_.lookup("amplitude_begin") >> amplitude_begin;
 	SBMFCoeffs_.lookup("Angle") >> angle_F_X;
 	SBMFCoeffs_.lookup("PatchName") >> PatchName;
+	SBMFCoeffs_.lookup("Oscillations") >> NuOfOsc;
 		
     omega_.reset
     (

@@ -215,7 +215,7 @@ bool Foam::functionObjects::TrimForces::read(const dictionary& dict)
     forces::read(dict);
 
         
-    NuOfOsc = dict.get<int>("Oscillations");
+//    NuOfOsc = dict.get<int>("Oscillations");
 //    omega = dict.get<scalar>("omega");
     
     writeFields_ = dict.getOrDefault("writeFields", false);
