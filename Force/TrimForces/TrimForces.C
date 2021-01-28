@@ -50,13 +50,10 @@ namespace functionObjects
 
 void Foam::functionObjects::TrimForces::createFiles()
 {
-	
     if (writeToFile() && !Trim_Force_Ptr.valid())
     {
 	Trim_Force_Ptr = createFile("Trim_Forces", startTime);
 	if(!restart_without_deleting) writeIntegratedHeaderNEW("Trim_Forces", Trim_Force_Ptr());
-//	Force_Cycle = createFile(FileName);
-//	writeIntegratedHeaderNEW("Force_Cycle", Force_Cycle());
     }
 }
 
@@ -79,52 +76,6 @@ void Foam::functionObjects::TrimForces::writeIntegratedHeaderNEW
 }
 
 
-
-/*DELETE FILE WIRD ERSTMAL AUSGELASSEN, KRÄFTE ALLE IN EINER DATEI SCHREIBEN
-void Foam::functionObjects::TrimForces::DeleteFile
-(
-
-) const
-{
-		
-	
-	float run_T=time().value();
-	float delta=time().deltaT().value();
-//	float TimeInterval= (NuOfOsc*2*3.1416)/omega;
-	float TimeInterval= 1;
-	string Path=time().path();
-	string PostProcessingPath="/postProcessing/TrimForces_Dir/0/Force_Cycle.dat";
-	Path=Path.append(PostProcessingPath);
-	
-	writeTrimForces
-	(
-      	"Trim_Forces",
-      	coordSys_.localVector(TrimForce_[0]),
-      	coordSys_.localVector(TrimForce_[1]),
-      	coordSys_.localVector(TrimForce_[2]),
-	Force_Cycle
-	);
-
-
-	if(TimeToDelete==0) TimeToDelete = TimeInterval+delta;		//Werte sollen erst nach einem Cycle gelöscht werden
-										//+delta wegen Zeitverzögerung zwischen schreiben und lesen
-
-	if(run_T>=TimeToDelete)
-	{
-
-		TimeToDelete += (TimeInterval+delta);	
-//		FileName += std::to_string(IT);
-//		IT++;
-		remove(Path.c_str());
-		Force_Cycle= createFile(FileName);
-		writeIntegratedHeaderNEW("Trim_Forces", Force_Cycle());    		
-
-	}
-
-
-}
-*/
-
 void Foam::functionObjects::TrimForces::writeIntegratedTrimForces
 (
     const string& descriptor,
@@ -145,9 +96,8 @@ void Foam::functionObjects::TrimForces::writeIntegratedTrimForces
 	{
 		Ostream& os = osPtr();
         	
-//              writeCurrentTime(os);	
 
-		os 	<< /*setprecision(5) <<*/ run_T;
+		os  <<	run_T;
 						
 		if(total[0]>0)	os << tab << setprecision(15) << "+" << total[0];
 		else os << setprecision(15) << tab << total[0];
@@ -180,10 +130,6 @@ void Foam::functionObjects::TrimForces::writeTrimForces()
 }
 
 
-
-
-
-
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::functionObjects::TrimForces::TrimForces
@@ -196,7 +142,6 @@ Foam::functionObjects::TrimForces::TrimForces
 :
     forces(name, runTime, dict, false),
     Trim_Force_Ptr()
-//    Force_Cycle(),
 {
 	if (readFields)
 	{
@@ -214,12 +159,7 @@ bool Foam::functionObjects::TrimForces::read(const dictionary& dict)
 {
     forces::read(dict);
 
-        
-//    NuOfOsc = dict.get<int>("Oscillations");
-//    omega = dict.get<scalar>("omega");
-    
     writeFields_ = dict.getOrDefault("writeFields", false);
-
 
     return true;
 }
@@ -235,14 +175,11 @@ bool Foam::functionObjects::TrimForces::execute()
 
         writeTrimForces();
 
-//	DeleteFile();
-
         Log << endl;
     }
 
     return true;
 }
-
 
 
 // ************************************************************************* //

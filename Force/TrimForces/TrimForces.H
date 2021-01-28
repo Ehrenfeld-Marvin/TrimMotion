@@ -57,16 +57,10 @@ protected:
 
             //- TrimForces
 	autoPtr<OFstream> Trim_Force_Ptr;
-//	mutable autoPtr<OFstream> Force_Cycle;
-
-
 
         // Read from dictionary
-
             
 	mutable scalar Amplitude;
-//	int NuOfOsc;
-//	scalar omega;
 	scalar startTime=time().startTime().value();
 	bool restart_without_deleting;
 
@@ -109,11 +103,7 @@ public:
 
     //- Runtime type information
     TypeName("TrimForces");
-	
-//	mutable float TimeToDelete=0;
-//	mutable string test[10];
-//	mutable int IT=0;
-//	mutable std::string FileName="Force_Cycle";
+
     // Constructors
 
         //- Construct from Time and dictionary

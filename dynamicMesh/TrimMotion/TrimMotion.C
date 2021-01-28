@@ -1,0 +1,159 @@
+/*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     |
+    \\  /    A nd           | Copyright (C) 2004-2010, 2019 OpenCFD Ltd.
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+                            | Copyright (C) 2011-2016 OpenFOAM Foundation
+-------------------------------------------------------------------------------
+License
+    This file is part of OpenFOAM.
+
+    OpenFOAM is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+
+\*---------------------------------------------------------------------------*/
+
+#include "TrimMotion.H"
+#include "addToRunTimeSelectionTable.H"
+#include "unitConversion.H"
+#include "mathematicalConstants.H"
+#include <fstream>
+#include <iostream>
+
+using namespace Foam::constant::mathematical;
+
+// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
+
+namespace Foam
+{
+namespace solidBodyMotionFunctions
+{
+    defineTypeNameAndDebug(TrimMotion, 0);
+    addToRunTimeSelectionTable
+    (
+        solidBodyMotionFunction,
+        TrimMotion,
+        dictionary
+    );
+}
+}
+
+
+// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
+
+Foam::solidBodyMotionFunctions::TrimMotion::
+TrimMotion
+(
+    const dictionary& SBMFCoeffs,
+    const Time& runTime
+)
+:
+    solidBodyMotionFunction(SBMFCoeffs, runTime)
+{
+	read(SBMFCoeffs);
+	#include "Constructor.H"
+}
+
+
+// * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
+
+Foam::solidBodyMotionFunctions::TrimMotion::
+~TrimMotion()
+{}
+
+
+// * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
+
+#include "WriteFilePID.H"
+#include "Control_Variables.H"
+#include "PID_BackUp_Data.H"
+#include "PID_Equation.H"
+
+
+Foam::septernion
+Foam::solidBodyMotionFunctions::TrimMotion::
+transformation() const
+{
+
+    scalar t = time_.value();
+    
+    scalar omega = omega_->value(t);
+    
+    scalar First_Cycle = (NuOfOsc*2*3.141592653)/(omega_PID*2);
+           
+    scalar delta_time = time_.deltaT().value();
+
+	Control_Variables(&Amplitude_Value, &phi_Value);
+	amplitude_.z()=Amplitude_Value;
+	
+	vector eulerAngles = amplitude_ * sin(omega*t + initialOffset_*pi*Euler_Ramp + phi_Value);
+	
+	if(t<=First_Cycle)			//euler Angles will be changed with a linear function, only first cycle
+	{
+		Euler_Ramp = Euler_Ramp + 1/(First_Cycle/delta_time);
+	}
+	else Euler_Ramp=1;
+	
+	cout 	<< "\nEuler_Ramp: " << Euler_Ramp
+		<< "\ntime: " << t
+		<< "\nFirst Cycle: " << First_Cycle
+		<< "\n";
+	
+    // Convert the rotational motion from deg to rad
+    eulerAngles *= degToRad();
+
+    quaternion R(quaternion::XYZ, eulerAngles);
+    septernion TR(septernion(-origin_)*R*septernion(origin_));
+
+    DebugInFunction << "Time = " << t << " transformation: " << TR << endl;
+
+    return TR;
+}
+
+
+bool Foam::solidBodyMotionFunctions::TrimMotion::read
+(
+    const dictionary& SBMFCoeffs
+)
+{
+    solidBodyMotionFunction::read(SBMFCoeffs);
+
+	SBMFCoeffs_.lookup("origin") >> origin_;
+	SBMFCoeffs_.lookup("omega_value") >> omega_PID;
+	SBMFCoeffs_.lookup("amplitude") >> amplitude_;
+//	SBMFCoeffs_.lookup("omega") >> omega_;
+	SBMFCoeffs_.lookup("initialOffset") >> initialOffset_;
+	SBMFCoeffs_.lookup("Amplitude_K_P") >> Amplitude_K_P;
+	SBMFCoeffs_.lookup("Amplitude_K_I") >> Amplitude_K_I;
+	SBMFCoeffs_.lookup("Amplitude_K_D") >> Amplitude_K_D;
+	SBMFCoeffs_.lookup("Phi_K_P") >> Phi_K_P;
+	SBMFCoeffs_.lookup("Phi_K_I") >> Phi_K_I;
+	SBMFCoeffs_.lookup("Phi_K_D") >> Phi_K_D;
+	SBMFCoeffs_.lookup("Target") >> Target_Force;
+	SBMFCoeffs_.lookup("amplitude_begin") >> amplitude_begin;
+	SBMFCoeffs_.lookup("Angle") >> angle_F_X;
+	SBMFCoeffs_.lookup("PatchName") >> PatchName;
+	SBMFCoeffs_.lookup("Oscillations") >> NuOfOsc;
+		
+    omega_.reset
+    (
+        Function1<scalar>::New("omega", SBMFCoeffs_).ptr()
+    );
+
+    return true;
+}
+
+
+// ************************************************************************* //

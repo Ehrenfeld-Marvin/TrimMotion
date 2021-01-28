@@ -1,1 +1,0 @@
-../motionSolvers/displacement/solidBody/solidBodyMotionFunctions/oscillatingRotatingMotion/TrimMotion/TrimMotion.C
