@@ -6,7 +6,6 @@ Foam::scalar Foam::solidBodyMotionFunctions::TrimMotion::PID_EQUATION
 	float K_I,
 	float K_D,
 	double* e_t_SUMME,
-	double* IST_alt,
 	double* e_t_alt,
 	double* P,
 	double* I,
@@ -27,8 +26,7 @@ Foam::scalar Foam::solidBodyMotionFunctions::TrimMotion::PID_EQUATION
 		
 		y_t= *P + *I + *D;					
 		
-		*IST_alt=*IST;
-		*e_t_alt=Target-*IST;
+		*e_t_alt = *e_t;
 		
 		return y_t;
 }

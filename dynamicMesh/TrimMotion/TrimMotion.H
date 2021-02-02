@@ -222,7 +222,6 @@ public:
 		float K_I,
 		float K_D,
 		double* e_t_SUMME,
-		double* IST_alt,
 		double* e_t_alt,
 		double* P_PHI,
 		double* I_PHI,

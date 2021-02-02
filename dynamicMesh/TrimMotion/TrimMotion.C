@@ -91,8 +91,7 @@ transformation() const
     
     scalar omega = omega_->value(t);
     
-    scalar First_Cycle = (NuOfOsc*2*3.141592653)/(omega_PID*2);
-           
+    scalar First_Cycle = (2*3.141592653)/(omega_PID*2);
     scalar delta_time = time_.deltaT().value();
 
 	Control_Variables(&Amplitude_Value, &phi_Value);
@@ -102,14 +101,11 @@ transformation() const
 	
 	if(t<=First_Cycle)			//euler Angles will be changed with a linear function, only first cycle
 	{
-		Euler_Ramp = Euler_Ramp + 1/(First_Cycle/delta_time);
+		Euler_Ramp = Euler_Ramp + delta_time/First_Cycle;
 	}
 	else Euler_Ramp=1;
 	
-	cout 	<< "\nEuler_Ramp: " << Euler_Ramp
-		<< "\ntime: " << t
-		<< "\nFirst Cycle: " << First_Cycle
-		<< "\n";
+
 	
     // Convert the rotational motion from deg to rad
     eulerAngles *= degToRad();
